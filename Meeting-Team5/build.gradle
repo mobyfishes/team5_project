@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'edu.vt'
+version '1.0'
+
+repositories {
+    // Default Maven Central repository
+    mavenCentral()
+
+    // flat filesystem directory containing the PrimeFaces JAR file
+    flatDir {
+        dirs 'C:\\Users\\BAOZ1\\IdeaProjects\\Meeting-Team5\\src\\main\\webapp\\WEB-INF\\lib'
+    }
+}
+
+ext {
+    junitVersion = '5.7.0'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compileOnly('javax:javaee-api:8.0.1')
+
+    // Name of PrimeFaces JAR file located in the flat filesystem directory defined above
+    compileOnly name: 'primefaces-7.0.7'
+
+    // imgscalr is a simple and efficient best practice image-scaling and manipulation library implemented in pure Java
+    // Name of imgscalr JAR file located in the flat filesystem directory defined above
+    compileOnly name: 'imgscalr-lib-4.2'
+
+    // MySQL JDBC Connector to Java
+    // implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
+    implementation 'mysql:mysql-connector-java:8.0.21'
+
+    // Java Architecture for XML Binding (JAXB) provides an API and tools that automate the mapping between XML documents and Java objects.
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+
+    /*
+     compileOnly — for dependencies that are necessary to compile your production code but shouldn’t be part of the runtime classpath
+     implementation (supersedes compile) — used for compilation and runtime
+     runtimeOnly (supersedes runtime) — only used at runtime, not for compilation
+
+     testCompileOnly — same as compileOnly except it’s for the tests
+     testImplementation — test equivalent of implementation
+     testRuntimeOnly — test equivalent of runtimeOnly
+     */
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+}
+
+test {
+    useJUnitPlatform()
+}
