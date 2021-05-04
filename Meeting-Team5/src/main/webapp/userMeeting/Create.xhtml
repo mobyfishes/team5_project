@@ -57,13 +57,14 @@
                                     requiredMessage="The Date Published field is required." />
 
                         <p:outputLabel for="meet_time" value="Meet Time"/>
-                        <p:datePicker id="meet_time" value="#{meetingController.selected.meet_time}" timeOnly="true" pattern="HH:mm"/>
+                        <p:datePicker id="meet_time" value="#{meetingController.selected.meet_time}" timeOnly="true" pattern="HH:mm"
+                                      required="true" requiredMessage="The Meet Time field is required."/>
 
                         <p:outputLabel value="Duration:" for="duration" />
                         <p:inputMask id="duration" class="inputTextField" value="#{meetingController.selected.duration}"
                                      title="Duration" required="true"
                                      requiredMessage="The Duration field is required."
-                                     mask="99:99:99"/>
+                                     mask="99:99"/>
 
                         <!--
                             YouTube ID for creating a new public video.
@@ -96,7 +97,7 @@
                         &nbsp;
                         <!-- 
                         CANCEL button: Call the cancel() method immediately without first rendering this JSF page.
-                        The cancel() method will make the selected country object null and show the List page.
+                        The cancel() method will make the selected meeting object null and show the List page.
                         -->
                         <p:commandButton value="Cancel" action="#{meetingController.cancel()}"
                                          icon="fas fa-ban" ajax="false" immediate="true" 

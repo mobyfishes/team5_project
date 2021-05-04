@@ -37,8 +37,8 @@
 
                         <!-- Use EL to reference the image file since it will be accessed from all UI pages -->
                         <h:link outcome="/index">
-                            <img src="#{resource['images:VideosLogo.png']}"
-                                 class="scalableImage" alt="Company Logo" />
+                            <img src="#{resource['images:MeetingLogo.png']}"
+                                 class="scalableImage" alt="Meeting Logo" />
                         </h:link>
 
                     </td>
@@ -131,6 +131,13 @@
                                         <i class="fas fa-user-plus" />&nbsp;Create an Account
                                     </h:link>
                                 </c:if>
+                                <h:link outcome="/index" class="standardText">
+                                    <i class="fas fa-language" />&nbsp;English
+                                </h:link>
+
+                                <h:link outcome="/CN/index" class="standardText">
+                                    <i class="fas fa-language" />&nbsp;Chinese
+                                </h:link>
 
                             </div>
                         </div>

@@ -10,56 +10,56 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <ui:composition>
-        <!-- 
-        ===================================================================
-        |  Clicking the CREATE button in List.xhtml displays this Dialog       |
-        |  window for the user to enter the data to create a new public Video. |
-        ===================================================================
-        -->
-        <p:dialog  id="InvitingDlg" widgetVar="InvitingeDialog" modal="true"
-                  resizable="false" appendTo="@(body)" header="Invite a user">
+<ui:composition>
+    <!--
+    ===================================================================
+    |  Clicking the CREATE button in List.xhtml displays this Dialog       |
+    |  window for the user to enter the data to create a new public Video. |
+    ===================================================================
+    -->
+    <p:dialog  id="InvitingDlg" widgetVar="InvitingeDialog" modal="true"
+               resizable="false" appendTo="@(body)" header="Invite a user">
 
-            <h:form id="InvitingForm" class="ui-datatable-data">
+        <h:form id="InvitingForm" class="ui-datatable-data">
 
-                <h:panelGroup id="display">
-                    <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2"
-                                 rendered="#{meetingController.selected != null}">
+            <h:panelGroup id="display">
+                <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2"
+                             rendered="#{meetingController.selected != null}">
 
-                        <!--
-                            Title form for creating a new public video.
-                        -->
-                        <p:outputLabel value="Username:" for="invite_username" />
-                        <p:inputText id="invite_username" class="inputTextField" value="#{meetingController.invited_username}"
-                                     title="Username" required="true"
-                                     requiredMessage="The Username is required."/>
+                    <!--
+                        Title form for creating a new public video.
+                    -->
+                    <p:outputLabel value="Username:" for="invite_username" />
+                    <p:inputText id="invite_username" class="inputTextField" value="#{meetingController.invited_username}"
+                                 title="Username" required="true"
+                                 requiredMessage="The Username is required."/>
 
 
-                    </p:panelGrid>
+                </p:panelGrid>
 
-                </h:panelGroup>
+            </h:panelGroup>
 
-                <h:panelGroup>
-                    <br />
-                    <div align="center">
-                        <!-- SAVE button -->
-                        <p:commandButton actionListener="#{meetingController.prepareInvite}" value="Confirm" icon="fas fa-save" ajax="false"
-                                         update="display,:MeetingListForm:datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
-                                         oncomplete="handleSubmit(args,'InvitingeDialog');" />
-                        &nbsp;
-                        <!-- 
-                        CANCEL button: Call the cancel() method immediately without first rendering this JSF page.
-                        The cancel() method will make the selected country object null and show the List page.
-                        -->
-                        <p:commandButton value="Cancel" action="#{meetingController.cancel()}"
-                                         icon="fas fa-ban" ajax="false" immediate="true" 
-                                         onclick="PF('InvitingDialog').hide()" />
-                    </div>
-                </h:panelGroup>
+            <h:panelGroup>
+                <br />
+                <div align="center">
+                    <!-- SAVE button -->
+                    <p:commandButton actionListener="#{meetingController.prepareInvite}" value="Confirm" icon="fas fa-save" ajax="false"
+                                     update="display,:MeetingListForm:datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
+                                     oncomplete="handleSubmit(args,'InvitingeDialog');" />
+                    &nbsp;
+                    <!--
+                    CANCEL button: Call the cancel() method immediately without first rendering this JSF page.
+                    The cancel() method will make the selected country object null and show the List page.
+                    -->
+                    <p:commandButton value="Cancel" action="#{meetingController.cancel()}"
+                                     icon="fas fa-ban" ajax="false" immediate="true"
+                                     onclick="PF('InvitingDialog').hide()" />
+                </div>
+            </h:panelGroup>
 
-            </h:form>
+        </h:form>
 
-        </p:dialog>
+    </p:dialog>
 
-    </ui:composition>
+</ui:composition>
 </html>

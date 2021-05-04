@@ -269,7 +269,7 @@ public class Meeting implements Serializable {
         this.attendant = attendant;
     }
 
-    public String getDateByFormate(){
+    public String getDateByFormat(){
         if (this.getStatus().equals("canceled")){
             return "Meeting was canceled by the Host";
         }

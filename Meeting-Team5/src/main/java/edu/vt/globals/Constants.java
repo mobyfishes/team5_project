@@ -19,7 +19,7 @@ public final class Constants {
     We decided to use directories external to our application for the storage and retrieval of user's files.
     We do not want to store/retrieve external files into/from our database for the following reasons:
     
-        (a) Database storage and retrieval of large files as BLOB (Binary Large OBject) degrades performance.
+        (a) Database storage and retrieval of large files as BLOB (Binary Large Object) degrades performance.
         (b) BLOBs increase the database complexity.
         (c) The operating system handles the external files instead of the database management system.
     
@@ -30,14 +30,14 @@ public final class Constants {
     |   For storing and internally accessing external files, we use absolute file paths.   |
     ========================================================================================
     Windows:
-        public static final String PHOTOS_ABSOLUTE_PATH = "C:/CS5704/DocRoot/UserPhotoStorage/";
+    //    public static final String PHOTOS_ABSOLUTE_PATH = "C:/CS5704/DocRoot/UserPhotoStorage/";
     Unix (macOS) or Linux:
      */
     // To run locally
-    //public static final String PHOTOS_ABSOLUTE_PATH = "C:/CS5704/DocRoot/UserPhotoStorage/";
+    public static final String PHOTOS_ABSOLUTE_PATH = "/Users/stevenbarnett/DocRoot/UserPhotoStorage/";
 
     // To run on your AWS EC2 instance
-    public static final String PHOTOS_ABSOLUTE_PATH  = "/opt/wildfly/DocRoot/UserPhotoStorage/";
+    //public static final String PHOTOS_ABSOLUTE_PATH  = "/opt/wildfly/DocRoot/UserPhotoStorage/";
     /*
      ---------------------------------
      To Deploy to Your AWS EC2 server:
@@ -64,11 +64,10 @@ public final class Constants {
      http://localhost:8080/files/f  displays file f from C:/CS5704/DocRoot/UserPhotoStorage/
      */
     // To run locally
-   //   public static final String PHOTOS_URI = "http://localhost:8080/profilephotos/";
-   // public static final String PHOTOS_URI = "http://localhost:8080/profilephotos/";
+    public static final String PHOTOS_URI = "http://localhost:8080/profilephotos/";
 
     // To run on your AWS EC2 instance with your IP address
-    public static final String PHOTOS_URI  = "http://18.206.45.168:8080/profilephotos/";
+    //public static final String PHOTOS_URI  = "http://3.239.166.77:8080/profilephotos/";
     /* 
     ==================================================
     |       Our Profile Photo Design Decision        |
@@ -105,4 +104,16 @@ public final class Constants {
         "What was your favorite place to visit as a child?"
     };
 
+    public static final String[] QUESTIONS_CN = {
+            "您父母都第一次相遇的城市是?",
+            "您出身的城市是?",
+            "您小时候的理想是?",
+            "在你小时候最让您印象深刻的是?",
+            "您初吻对象的名字是?",
+            "您的就读的第一所学校名字是？",
+            "你童年最好的朋友的名字是?",
+            "您第一只宠物的名字是?",
+            "您母亲的名是?",
+            "您小时候最喜欢的地方是?"
+    };
 }

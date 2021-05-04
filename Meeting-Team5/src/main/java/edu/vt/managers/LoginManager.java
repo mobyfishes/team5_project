@@ -26,6 +26,9 @@ public class LoginManager implements Serializable {
      */
     private String username;
     private String password;
+    private String validation_code;
+
+
 
     /*
     The instance variable 'userFacade' is annotated with the @EJB annotation.
@@ -131,6 +134,61 @@ public class LoginManager implements Serializable {
             return "/userAccount/Profile?faces-redirect=true";
         }
     }
+
+    public String loginUser_CN() {
+
+        // Since we will redirect to show the Profile page, invoke preserveMessages()
+        Methods.preserveMessages();
+
+        String enteredUsername = getUsername();
+
+        // Obtain the object reference of the User object from the entered username
+        User user = getUserFacade().findByUsername(enteredUsername);
+
+        if (user == null) {
+            Methods.showMessage("Fatal Error", "Unknown Username!",
+                    "Entered username " + enteredUsername + " does not exist!");
+            return "";
+
+        } else {
+            String actualUsername = user.getUsername();
+
+            String actualPassword = user.getPassword();
+            String enteredPassword = getPassword();
+
+            if (!actualUsername.equals(enteredUsername)) {
+                Methods.showMessage("Fatal Error", "Invalid Username!", "Entered Username is Unknown!");
+                return "";
+            }
+
+            //------------------------------------------------------------------------------------
+            // Obtain the user's password String containing the following parts from the database
+            //       "algorithmName":"PBKDF2_ITERATIONS":"hashSize":"salt":"hash",
+            // extract the actual password from the parts, and compare it with the password String
+            // entered by the user by using Key Stretching to prevent brute-force attacks.
+            //------------------------------------------------------------------------------------
+            try {
+                if (Password.verifyPassword(enteredPassword, actualPassword)) {
+                    // entered password = user's actual password
+                } else {
+                    Methods.showMessage("Fatal Error", "Invalid Password!", "Please Enter a Valid Password!");
+                    return "";
+                }
+            } catch (Password.CannotPerformOperationException | Password.InvalidHashException ex) {
+
+                Methods.showMessage("Fatal Error", "Password Manager was unable to perform its operation!",
+                        "See: " + ex.getMessage());
+                return "";
+            }
+
+            // Initialize the session map with user properties of interest
+            initializeSessionMap(user);
+
+            // Redirect to show the Profile page
+            return "/CN/userAccount/Profile?faces-redirect=true";
+        }
+    }
+
 
     /*
     ******************************************************************

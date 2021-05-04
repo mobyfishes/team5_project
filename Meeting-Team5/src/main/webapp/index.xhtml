@@ -46,7 +46,7 @@
                 -->
                 <c:if test="#{userController.isLoggedIn() == true}">
                     <p:button outcome="/userMeeting/List"
-                              value="My meeting" icon="fas fa-pencil-alt"  />
+                              value="My Meeting" icon="fas fa-pencil-alt"  />
                 </c:if>
 
                 <!--
@@ -55,7 +55,7 @@
                 ===========================================
                 -->
                 <c:if test="#{userController.isLoggedIn() == false}">
-                    <p:button outcome="/SignIn" value="My meeting" icon="fas fa-pencil-alt"  />
+                    <p:button outcome="/SignIn" value="Sign In" icon="fas fa-pencil-alt"  />
                 </c:if>
             </div>
         </ui:define>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Osman Balci on 2021.1.26
+  - Copyright © 2021 Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition>
+        <!-- 
+        ==========================================================
+        |  Clicking the VIEW button in List.xhtml displays this  |
+        |  Dialog window showing the selected country's data.    |
+        ==========================================================
+        -->
+        <p:dialog id="AttendanceViewDlg" widgetVar="AttendanceViewDialog" modal="true"
+                  resizable="false" appendTo="@(body)" header="查看会议">
+
+            <h:form id="AttendanceViewForm" class="ui-datatable-data">
+                <h:panelGroup id="display" style="background-color: papayawhip">
+                <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2" styleClass="ui-noborder"
+                             rendered="#{meetingController.selected != null}">
+
+                        <p:outputLabel value="参加用户:"/>
+                        <p:outputLabel value="#{meetingController.getAttendantList()}"/>
+
+
+                </p:panelGrid>
+                </h:panelGroup>
+                    <br />
+                <div id="closeButton" align="center">
+                    <h:panelGroup>
+                        <!-- CLOSE button -->
+                        <p:commandButton value="关闭" onclick="PF('AttendanceViewDlg').hide()"
+                                         icon="fas fa-window-close" />
+                    </h:panelGroup>
+                </div>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+</html>

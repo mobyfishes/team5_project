@@ -47,8 +47,8 @@
                                      rowsPerPageTemplate="5,10,20,30,50,70,90"
                                      class="dataTable"
                                      >
-                            <p:ajax event="rowSelect"   update="playButton acceptButton viewButton deleteButton"/>
-                            <p:ajax event="rowUnselect" update="playButton acceptButton viewButton deleteButton"/>
+                            <p:ajax event="rowSelect"   update="playButton acceptButton viewButton calButton deleteButton"/>
+                            <p:ajax event="rowUnselect" update="playButton acceptButton viewButton calButton deleteButton"/>
                             <!--
                             Clicking the header of a column with 'sortBy' redisplays the table with that  
                             column sorted in alphabetical order A to Z or numerically in ascending order. 
@@ -89,7 +89,7 @@
                             *********************
                             -->
                             <p:column sortBy="#{item.meet_date}" headerText="Meet Date" style="text-align: center; width:100px;">
-                                <h:outputText class="standardText" value="#{item.getDateByFormate()}"/>
+                                <h:outputText class="standardText" value="#{item.getDateByFormat()}"/>
                             </p:column>
 
                             <!--
@@ -119,8 +119,8 @@
                                               update="datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
                                               disabled="#{empty meetingController.selected}">
 
-                                 <p:confirm header="Accpet Confirmation"
-                                            message="Are you sure you want to Accpet the selected Meeting?"
+                                 <p:confirm header="Accept Invitation"
+                                            message="Are you sure you want to accept the selected Invitation?"
                                             icon="fas fa-exclamation-triangle fa-2x" />
                              </p:commandButton>
 
@@ -141,13 +141,21 @@
                                               update=":MeetingViewDlg" oncomplete="PF('MeetingViewDialog').show()"
                                               disabled="#{empty meetingController.selected}"/>
 
+                             <!-- Check Google Calendar Availability -->
+                             <c:if test="#{userController.isLoggedIn() == true}">
+                                 <p:commandButton id="calButton" icon="fas fa-calendar" value="Check Google Calendar Availability"
+                                                  actionListener="#{googleCalController.checkConflicts(meetingController.selected)}"
+                                                  update="datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
+                                                  disabled="#{empty meetingController.selected}"/>
+                             </c:if>
+
                              <p:commandButton id="deleteButton" icon="fas fa-trash-alt"  value="Delete"
                                               actionListener="#{meetingController.destroy}"
                                               update="datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
                                               disabled="#{empty meetingController.selected}">
 
                                  <p:confirm header="Delete Confirmation"
-                                            message="Are you sure you want to permanently delete the selected Video from the database?"
+                                            message="Are you sure you want to permanently delete the selected meeting from the database?"
                                             icon="fas fa-exclamation-triangle fa-2x" />
                              </p:commandButton>
 

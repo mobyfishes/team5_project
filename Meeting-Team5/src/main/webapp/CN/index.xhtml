@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Zihao Cai on 2021.3.21
+  - Copyright © 2021 Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <!-- Do not enter tags before the composition line since they are ignored by JSF -->
+
+    <!-- This page is constructed based on the siteTemplate -->
+    <ui:composition template="/CN/template/siteTemplate.xhtml">
+
+        <!-- Create the content for this page below -->
+        <ui:define name="editableContent">
+
+            <div align="center">
+                <!-- 
+                ========================================
+                *   PrimeFaces Galleria Image Slider   *
+                ========================================
+                Various effect options for transitions: blind, bounce, clip, drop, explode, fade,
+                fold, highlight, puff, pulsate, scale, shake, size, slide, and transfer.
+                -->
+                <p:galleria value="#{sliderController.sliderImages}" 
+                            var="image" effect="clip" effectSpeed="1000" showFilmstrip="true"
+                            panelWidth="500" panelHeight="313" showCaption="true">
+
+                    <p:graphicImage value="/resources/images/slider/#{image}" 
+                                    alt="#{sliderController.description(image)}" title="" />
+
+                </p:galleria>
+
+            </div>
+            <br /><br /><br />
+            <div align="center">
+
+                <!--
+                ==============================================
+                Show "Questionnaire" page if user is signed in
+                ==============================================
+                -->
+                <c:if test="#{userController.isLoggedIn() == true}">
+                    <p:button outcome="/CN/userMeeting/List"
+                              value="我的会议" icon="fas fa-pencil-alt"  />
+                </c:if>
+
+                <!--
+                ===========================================
+                Show "Sign In" page if no user is signed in
+                ===========================================
+                -->
+                <c:if test="#{userController.isLoggedIn() == false}">
+                    <p:button outcome="/CN/SignIn" value="我的会议" icon="fas fa-pencil-alt"  />
+                </c:if>
+            </div>
+        </ui:define>
+
+    </ui:composition>
+    <!-- Do not enter tags after the composition line since they are ignored by JSF -->
+
+</html>

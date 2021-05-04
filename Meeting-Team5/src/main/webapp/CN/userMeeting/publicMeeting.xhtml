@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Zihao Cai on 2021.3.22
+  - Copyright © 2021 Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<!-- Do not enter tags before the composition line since they are ignored by JSF -->
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/CN/template/siteTemplate.xhtml">
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="公开会议" />
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+
+        <!-- In case of JSF validation error, set 'selected' to null in countryController -->
+        <c:if test="#{facesContext.validationFailed}">
+            ${meetingController.unselect()}
+        </c:if>
+
+        <!-- Set 'selected' to null in meetingController when the user refreshes / reloads this JSF page -->
+        <f:metadata>
+            <f:viewAction action="#{meetingController.unselect()}" rendered="#{facesContext.postBack}" />
+        </f:metadata>
+
+        <div align="center" style="width:97%">
+
+            <h:form id="PublicMeetingListForm">
+                <p:panel header="公开会议">
+
+                    <p:dataTable id="datalist" value="#{meetingController.getPublicMeetings()}" var="item"
+                                 selectionMode="single" selection="#{meetingController.selected}"
+                                 reflow="true"
+                                 paginator="true"
+                                 rowKey="#{item.id}"
+                                 rows="10"
+                                 rowsPerPageTemplate="5,10,20,30,50,70,90"
+                                 class="dataTable"
+                    >
+                        <p:ajax event="rowSelect"   update="viewButton acceptButton playButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="viewButton acceptButton playButton deleteButton"/>
+                        <!--
+                        Clicking the header of a column with 'sortBy' redisplays the table with that
+                        column sorted in alphabetical order A to Z or numerically in ascending order.
+                        Clicking it again reverses the order to Z to A or numerically in descending order.
+                        -->
+                        <!--
+                        *********************
+                        *    Video Title   *
+                        *********************
+                        -->
+                        <p:column headerText="Id" style="text-align: center; width:20px;">
+                            <h:outputText class="standardText" value="#{item.id}"/>
+                        </p:column>
+
+
+                        <!--
+                        *********************
+                        *    Video Title   *
+                        *********************
+                        -->
+                        <p:column sortBy="#{item.title}" headerText="标题" style="text-align: left; width:100px;">
+                            <h:outputText class="standardText" value="#{item.title}"/>
+                        </p:column>
+
+
+                        <!--
+                        *********************
+                        *    Video duration   *
+                        *********************
+                        -->
+                        <p:column sortBy="#{item.location}" headerText="地点" style="text-align: center; width:80px;">
+                            <h:outputText class="standardText" value="#{item.location}"/>
+                        </p:column>
+
+                        <!--
+                        *********************
+                        *    Video Date Published   *
+                        *********************
+                        -->
+                        <p:column sortBy="#{item.meet_date}" headerText="会议日期" style="text-align: center; width:100px;">
+                            <h:outputText class="standardText" value="#{item.getDateByFormat()}"/>
+                        </p:column>
+
+                        <!--
+                        *********************
+                        *    Video category   *
+                        *********************
+                        -->
+                        <p:column sortBy="#{item.hostname}" headerText="主办人" style="text-align: center; width:80px;">
+                            <h:outputText class="standardText" value="#{item.hostname}"/>
+                        </p:column>
+
+
+                        <br /><br />
+
+                        <!--
+                        The "footer" facet is defined for p:dataTable. See PrimeFaces User Guide.
+                        -->
+
+                        <f:facet name="footer">
+
+                            <!-- PLAY button -->
+                            <p:commandButton id="playButton" icon="fas fa-play" value="播放"
+                                             update=":MeetingVideoPlayDlg" oncomplete="PF('MeetingVideoPlayDialog').show()"
+                                             disabled="#{empty meetingController.selected or meetingController.checkVideoLink() == true}"/>
+
+                            <!-- RSVP button -->
+                            <p:commandButton id="acceptButton" icon="fas fa-check"  value="RSVP"
+                                             actionListener="#{meetingController.acceptPublicMeeting()}"
+                                             update="datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
+                                             disabled="#{empty meetingController.selected or userController.selected.username == meetingController.selected.hostname or userController.isLoggedIn() != true}">
+
+                                <p:confirm header="添加会议"
+                                           message="您确定要将所选会议添加到您的会议列表中吗？?"
+                                           icon="fas fa-exclamation-triangle fa-2x" />
+                            </p:commandButton>
+
+                            <p:confirmDialog id="confirmDialogBox" global="true" showEffect="fade" hideEffect="fade" >
+                                <div align="center">
+                                    <!-- The value of the first button listed below will be shown as
+                                    highlighted (default action) when displayed -->
+                                    <p:commandButton value="否" type="button"
+                                                     class="ui-confirmdialog-no" icon="fas fa-window-close" />
+                                    &nbsp;
+                                    <p:commandButton value="是" type="button"
+                                                     class="ui-confirmdialog-yes" icon="fas fa-check-square" />
+                                </div>
+                            </p:confirmDialog>
+
+                            <!-- VIEW button -->
+                            <p:commandButton id="viewButton" icon="fas fa-eye" value="查看"
+                                             update=":MeetingViewDlg" oncomplete="PF('MeetingViewDialog').show()"
+                                             disabled="#{empty meetingController.selected}"/>
+
+                            <!-- Add Meeting to Google Calendar -->
+                            <c:if test="#{userController.isLoggedIn() == true}">
+                                <p:commandButton id="calButton" icon="fas fa-calendar" value="检查谷歌日历的可用性"
+                                                 actionListener="#{googleCalController.checkConflicts(meetingController.selected)}"
+                                                 disabled="#{empty meetingController.selected}"/>
+                            </c:if>
+
+                            <p:commandButton id="deleteButton" icon="fas fa-trash-alt"  value="删除"
+                                             actionListener="#{meetingController.destroy}"
+                                             update="datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
+                                             disabled="#{empty meetingController.selected or userController.selected.username != meetingController.selected.hostname}">
+
+                                <p:confirm header="确认删除"
+                                           message="你确定要从数据库中永久删除所选会议吗？"
+                                           icon="fas fa-exclamation-triangle fa-2x" />
+                            </p:commandButton>
+
+
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+        </div>
+        <ui:include src="/CN/userMeeting/Create.xhtml"/>
+        <ui:include src="/CN/userMeeting/View.xhtml"/>
+        <ui:include src="/CN/userMeeting/Invite.xhtml"/>
+        <ui:include src="/CN/userMeeting/Play.xhtml"/>
+        <ui:include src="/CN/userMeeting/Attendance.xhtml"/>
+
+
+
+    </ui:define>
+
+</ui:composition>
+<!-- Do not enter tags after the composition line since they are ignored by JSF -->
+
+</html>

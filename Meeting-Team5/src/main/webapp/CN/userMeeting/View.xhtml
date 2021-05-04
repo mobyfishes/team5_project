@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Osman Balci on 2021.1.26
+  - Copyright © 2021 Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition>
+        <!-- 
+        ==========================================================
+        |  Clicking the VIEW button in List.xhtml displays this  |
+        |  Dialog window showing the selected country's data.    |
+        ==========================================================
+        -->
+        <p:dialog id="MeetingViewDlg" widgetVar="MeetingViewDialog" modal="true"
+                  resizable="false" appendTo="@(body)" header="查看会议">
+
+            <h:form id="MeetingViewForm" class="ui-datatable-data">
+                <h:panelGroup id="display" style="background-color: papayawhip">
+                <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2" styleClass="ui-noborder"
+                             rendered="#{meetingController.selected != null}">
+
+                        <p:outputLabel value="标题:"/>
+                        <p:outputLabel value="#{meetingController.selected.title}"/>
+
+                        <p:outputLabel value="主办人:"/>
+                        <p:outputLabel value="#{meetingController.selected.hostname}"/>
+
+                        <p:outputLabel value="地点:"/>
+                        <p:outputLabel value="#{meetingController.selected.location}"/>
+
+                        <p:outputLabel value="会议日期:"/>
+                        <p:outputLabel value="#{meetingController.selected.getDateByFormat()}"/>
+
+                        <p:outputLabel value="会议时长:"/>
+                        <p:outputLabel value="#{meetingController.selected.duration}"/>
+
+                        <p:outputLabel value="视频:"/>
+                        <p:outputLabel value="#{meetingController.selected.video_link}"/>
+
+                        <p:outputLabel value="描述:"/>
+                        <p:outputLabel value="#{meetingController.selected.description}"/>
+
+                </p:panelGrid>
+                </h:panelGroup>
+                    <br />
+                <div id="closeButton" align="center">
+                    <h:panelGroup>
+                        <!-- CLOSE button -->
+                        <p:commandButton value="关闭" onclick="PF('MeetingViewDialog').hide()"
+                                         icon="fas fa-window-close" />
+                    </h:panelGroup>
+                </div>
+
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+</html>

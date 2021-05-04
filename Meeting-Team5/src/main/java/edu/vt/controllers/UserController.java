@@ -281,6 +281,25 @@ public class UserController implements Serializable {
         return security_questions;
     }
 
+    public Map<String, Object> getSecurity_questions_cn() {
+
+        if (security_questions == null) {
+            /*
+            Difference between HashMap and LinkedHashMap:
+            HashMap stores key-value pairings in no particular order.
+                Values are retrieved based on their corresponding Keys.
+            LinkedHashMap stores and retrieves key-value pairings
+                in the order they were put into the map.
+             */
+            security_questions = new LinkedHashMap<>();
+
+            for (int i = 0; i < Constants.QUESTIONS_CN.length; i++) {
+                security_questions.put(Constants.QUESTIONS_CN[i], i);
+            }
+        }
+        return security_questions;
+    }
+
     public void setSecurity_questions(Map<String, Object> security_questions) {
         this.security_questions = security_questions;
     }

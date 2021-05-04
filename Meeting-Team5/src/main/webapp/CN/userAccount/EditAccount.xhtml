@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Zihao Cai on 2021.3.21
+  - Copyright © 2021 Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <!-- Do not enter tags before the composition line since they are ignored by JSF -->
+
+    <!-- This page is constructed based on the siteTemplate -->
+    <ui:composition template="/CN/template/siteTemplate.xhtml">
+
+        <ui:define name="title">
+            <!-- Set the page title -->
+            <h:outputText value="编辑账户" />
+        </ui:define>
+
+        <!-- Create the content for this page below -->
+        <ui:define name="editableContent">
+            <div align="center" style="width:50%; margin:0 auto;">
+
+                <h:form id="EditAccountProfileForm">
+
+                    <h1>Edit Account Profile</h1>
+
+                    <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2">
+                        <!--
+                        ********************************
+                        *          FIRST NAME          *
+                        ********************************
+                        -->
+                        <p:outputLabel value="名:" for="firstName" />
+                        <p:inputText id="firstName" value="#{userController.selected.firstName}" required="true" class="inputTextField"
+                                     requiredMessage="请输入名." label="First Name">
+                            <f:validateLength minimum="2" />
+                        </p:inputText>   
+
+                        <!--
+                        ********************************
+                        *         MIDDLE NAME          *
+                        ********************************
+                        -->
+                        <p:outputLabel value="中间名:" for="middleName" />
+                        <p:inputText id="middleName" value="#{userController.selected.middleName}"
+                                     required="false" class="inputTextField" label="Middle Name">
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *           LAST NAME          *
+                        ********************************
+                        -->
+                        <p:outputLabel value="姓:" for="lastName" />
+                        <p:inputText id="lastName" value="#{userController.selected.lastName}" required="true" class="inputTextField"
+                                     requiredMessage="请输入姓." label="Last Name">
+                            <f:validateLength minimum="2" />
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *        ADDRESS LINE 1        *
+                        ********************************
+                        -->
+                        <p:outputLabel value="住址 1:" for="address1" />
+                        <p:inputText id="address1" value="#{userController.selected.address1}" required="true" class="inputTextField"
+                                     requiredMessage="请输入所在地址." label="Address Line 1">
+                            <f:validateLength minimum="2" />
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *        ADDRESS LINE 2        *
+                        ********************************
+                        -->
+                        <p:outputLabel value="住址 2:" for="address2" />
+                        <p:inputText id="address2" value="#{userController.selected.address2}" class="inputTextField" label="Address Line 2">
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *             CITY             *
+                        ********************************
+                        -->
+                        <p:outputLabel value="所在城市:" for="city" />
+                        <p:inputText id="city" value="#{userController.selected.city}" required="true" class="inputTextField"
+                                     requiredMessage="请输入所在城市." label="City">
+                            <f:validateLength minimum="2" />
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *      STATE ABBREVIATION      *
+                        ********************************
+                        -->
+                        <p:outputLabel value="州:" for="state" />
+                        <h:selectOneMenu id="state" value="#{userController.selected.state}" required="true" >
+                            <f:selectItems value="#{userController.listOfStates()}" var="state"
+                                           itemLabel="#{state}" itemValue="#{state}" />
+                        </h:selectOneMenu>
+
+                        <!--
+                        ********************************
+                        *           ZIP CODE           *
+                        ********************************
+                        -->
+                        <p:outputLabel value="邮政编码:" for="zipcode" />
+                        <p:inputText id="zipcode" value="#{userController.selected.zipcode}" required="true" class="inputTextField"
+                                     requiredMessage="请输入邮政编码." label="Zip Code" >
+                            <f:validateLength minimum="5" />
+                            <f:validator validatorId="zipCodeValidator"/> 
+                        </p:inputText>
+
+                        <!--
+                        ********************************
+                        *         EMAIL ADDRESS        *
+                        ********************************
+                        -->
+                        <p:outputLabel value="邮箱地址:" for="email" />
+                        <p:inputText id="email" value="#{userController.selected.email}" required="true" class="inputTextField"
+                                     requiredMessage="请输入邮箱地址." label="Email">
+                            <f:validateLength minimum="2" />
+                            <f:validator validatorId="emailValidator" />  
+                        </p:inputText>
+
+                        <!-- Username is listed in an uneditable mode and cannot be changed -->
+                        <h:outputText value="用户名:" />
+                        <h:outputText value="#{userController.selected.username}" />
+                    </p:panelGrid>
+
+                    <br />
+                    <!--
+                    ================================
+                    |          SAVE Button         |
+                    ================================
+                    -->
+                    <p:commandButton id="submit" value="保存" action="#{userController.updateAccount()}"
+                                     ajax="false" icon="fas fa-save" />
+                    &nbsp;
+                    <!--
+                    ================================
+                    |         CANCEL Button        |
+                    ================================
+                    -->
+                    <p:button outcome="/CN/userAccount/Profile" value="取消" icon="fas fa-ban"  />
+
+                    <br /><br />
+                </h:form>
+
+            </div>
+        </ui:define>
+
+    </ui:composition>
+    <!-- Do not enter tags after the composition line since they are ignored by JSF -->
+</html>

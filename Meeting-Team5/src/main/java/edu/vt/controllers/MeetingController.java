@@ -14,9 +14,6 @@ import edu.vt.globals.Methods;
 
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,7 +23,6 @@ import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.mail.MessagingException;
-import java.util.Calendar;
 
 /*
 ---------------------------------------------------------------------------
@@ -255,6 +251,7 @@ public class MeetingController implements Serializable {
         selected = null;
     }
 
+
     /*
      ******************************************************
      *   Cancel to Display List.xhtml JSF Facelets Page   *
@@ -277,6 +274,11 @@ public class MeetingController implements Serializable {
         return "/userMeeting/List?faces-redirect=true";
     }
 
+    public String goBackToList_cn() {
+        // Unselect a public video selected in search results if any before showing the List page
+        selected = null;
+        return "/CN/userMeeting/List?faces-redirect=true";
+    }
 
     /*
     ************************************
@@ -305,6 +307,8 @@ public class MeetingController implements Serializable {
         message Detail to "" in the addSuccessMessage(String msg) method in the jsfUtil.java file.
          */
         persist(PersistAction.CREATE, "Meeting was successfully created.");
+
+        //update there
         if (!JsfUtil.isValidationFailed()) {
             // No JSF validation error. The CREATE operation is successfully performed.
             selected = null; // Remove selection
@@ -336,16 +340,21 @@ public class MeetingController implements Serializable {
        */
     public void destroy() {
         Methods.preserveMessages();
-        Integer meetid = selected.getMeeting_id();
-        User signedInUser = (User) Methods.sessionMap().get("user");
-        if(signedInUser.getUsername().equals(selected.getHostname())){
-           List<Meeting> canceledMeeting = getMeetingFacade().findMeetingByMeetID(meetid);
-           for (int i = 0; i < canceledMeeting.size(); i++){
-               Meeting temp = canceledMeeting.get(i);
-               temp.setStatus("canceled");
-               getMeetingFacade().edit(temp);
-           }
+
+        if(selected.getAttendant().length() > selected.getHostname().length()){
+            Integer meetid = selected.getMeeting_id();
+            User signedInUser = (User) Methods.sessionMap().get("user");
+            if(signedInUser.getUsername().equals(selected.getHostname())){
+                List<Meeting> canceledMeeting = getMeetingFacade().findMeetingByMeetID(meetid);
+                for (int i = 0; i < canceledMeeting.size(); i++){
+                    Meeting temp = canceledMeeting.get(i);
+                    temp.setStatus("canceled");
+                    getMeetingFacade().edit(temp);
+                }
+            }
         }
+
+
 
         persist(PersistAction.DELETE, "Meeting was successfully deleted.");
         if (!JsfUtil.isValidationFailed()) {
@@ -491,6 +500,15 @@ public class MeetingController implements Serializable {
         return "/userMeeting/SearchResults?faces-redirect=true";
     }
 
+    public String search_cn() {
+        // Unselect previously selected public video if any before showing the search results
+        selected = null;
+        // Invalidate list of search items to trigger re-query.
+        searchItems = null;
+        return "/CN/userMeeting/SearchResults?faces-redirect=true";
+    }
+
+
     public boolean checkVideoLink(){
         if(selected.getVideo_link().equals("NoVideo")){
             return true;
@@ -505,7 +523,7 @@ public class MeetingController implements Serializable {
             return attendant_list;
         }
         else{
-            Methods.showMessage("Information", "Permission dined", "Only host can see the list of attendance!");
+            Methods.showMessage("Information", "Permission denied", "Only host can see the attendance list!");
             return "No data!";
         }
     }
@@ -558,11 +576,12 @@ public class MeetingController implements Serializable {
         User invitedUser = getUserFacade().findByUsername(invited_username);
         if (invitedUser == null){
             Methods.showMessage("Error", "Username incorrect or the user not exist!", "");
-        }
-        else {
+        } else if (selected.getAttendant().contains(invited_username)) {
+            Methods.showMessage("Error", "User is already attending this meeting!", "");
+        } else {
             selected.setMeeting_id(selected.getId());
             Methods.preserveMessages();
-            persist(PersistAction.UPDATE,"Invitations send!");
+            persist(PersistAction.UPDATE,"Invitations sent!");
 
             Meeting meeting = new Meeting();
             meeting.setTitle(selected.getTitle());
@@ -580,7 +599,7 @@ public class MeetingController implements Serializable {
 
             emailController = new EmailController();
             emailController.setEmailTo(invitedUser.getEmail());
-            String notification = "You are invited to the " + meeting.getTitle() + " by " + meeting.getHostname() + "at " + meeting.getDateByFormate()  + " .";
+            String notification = "You are invited to " + meeting.getTitle() + " by " + meeting.getHostname() + " at " + meeting.getDateByFormat()  + " .";
             emailController.setEmailBody(notification);
             emailController.setEmailSubject("You got a meeting invitation!");
             try {
@@ -611,7 +630,7 @@ public class MeetingController implements Serializable {
         return publicMeetings;
     }
 
-    public List<Meeting> getAccpetedMeetings(){
+    public List<Meeting> getAcceptedMeetings(){
         List<Meeting> allmeetings = getItems();
         List<Meeting> acceptedMeetings = new ArrayList<>();
 

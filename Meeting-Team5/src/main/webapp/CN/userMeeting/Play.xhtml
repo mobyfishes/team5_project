@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Zihao Cai on 2021.3.23
+  - Copyright © 2021 Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets" >
+
+<ui:composition>
+    <!--
+    ====================================================
+    Dialog Showing YouTube Player for the Selected Video
+    ====================================================
+    -->
+    <p:dialog position="center center" id="MeetingVideoPlayDlg" widgetVar="MeetingVideoPlayDialog"
+              width="90%" modal="true" resizable="true" appendTo="@(body)" header="播放视频" >
+
+        <h:form id="MeetingVideoPlayForm">
+
+            <div align="center">
+                <br />
+                <div class="responsive-container">
+                    <iframe class="responsive-iframe"
+                            src="https://www.youtube.com/embed/#{meetingController.selected.video_link}">
+                    </iframe>
+                </div>
+                <br />
+                <!-- CLOSE button -->
+                <p:commandButton value="关闭" onclick="PF('MeetingVideoPlayDialog').hide()"
+                                 icon="fas fa-window-close"/>
+            </div>
+        </h:form>
+    </p:dialog>
+
+</ui:composition>
+</html>

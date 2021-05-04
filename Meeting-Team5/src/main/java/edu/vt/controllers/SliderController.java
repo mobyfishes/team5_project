@@ -28,7 +28,7 @@ public class SliderController {
 
         sliderImages = new ArrayList<>();
 
-        for (int i = 1; i <= 12; i++) {
+        for (int i = 1; i <= 13; i++) {
             sliderImages.add("photo" + i + ".png");
         }
     }
@@ -53,40 +53,43 @@ public class SliderController {
 
         switch (image) {
             case "photo1.png":
-                imageDescription = "Multimedia content typically includes videos";
+                imageDescription = "New Year (January 1)";
                 break;
             case "photo2.png":
-                imageDescription = "Videos are used all over the planet of earth";
+                imageDescription = "Lunar New Year (January-February)";
                 break;
             case "photo3.png":
-                imageDescription = "A spiraling view of hundreds of videos";
+                imageDescription = "Mardi Gras (February-March)";
                 break;
             case "photo4.png":
-                imageDescription = "Old fashioned film containing images";
+                imageDescription = "Valentine’s Day (February 14)";
                 break;
             case "photo5.png":
-                imageDescription = "Videos on hundreds of TV screens";
+                imageDescription = "St. Patrick’s Day (March 17)";
                 break;
             case "photo6.png":
-                imageDescription = "Users can watch and upload their own videos on YouTube";
+                imageDescription = "Holi (March)";
                 break;
             case "photo7.png":
-                imageDescription = "A variety of videos on many TV screens";
+                imageDescription = "Easter (March-April)";
                 break;
             case "photo8.png":
-                imageDescription = "High definition TVs show videos with high quality";
+                imageDescription = "Ramadan (April-May)";
                 break;
             case "photo9.png":
-                imageDescription = "Videos improve the user experience";
+                imageDescription = "Midsummer (June)";
                 break;
             case "photo10.png":
-                imageDescription = "YouTube provides music videos, trends, and channels";
+                imageDescription = "Diwali (October-November)";
                 break;
             case "photo11.png":
-                imageDescription = "Digital technologies enable widespread use of videos";
+                imageDescription = "Day of the Dead (November)";
                 break;
             case "photo12.png":
-                imageDescription = "Touch-based interaction with videos enriches user experience";
+                imageDescription = "Hanukkah (December)";
+                break;
+            case "photo13.png":
+                imageDescription = "Christmas (December 25)";
                 break;
         }
 
