@@ -116,7 +116,7 @@
                                              disabled="#{empty meetingController.selected or meetingController.checkVideoLink() == true}"/>
 
                             <!-- RSVP button -->
-                            <p:commandButton id="acceptButton" icon="fas fa-check"  value="RSVP"
+                            <p:commandButton id="acceptButton" icon="fas fa-check"  value="接受"
                                              actionListener="#{meetingController.acceptPublicMeeting()}"
                                              update="datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
                                              disabled="#{empty meetingController.selected or userController.selected.username == meetingController.selected.hostname or userController.isLoggedIn() != true}">
