@@ -33,9 +33,9 @@ import java.net.URI;
 @Named("googleCalController")
 
 public class GoogleCalController {
-    private static final String APPLICATION_NAME = "Meeting-Team5";
+    private static final String APPLICATION_NAME = "Meeting-Scheduler";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
+    private static final String TOKENS_DIRECTORY_PATH = "tokens/";
 
     /**
      * Global instance of the scopes required by this application.

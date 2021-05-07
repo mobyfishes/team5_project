@@ -4,6 +4,7 @@
  */
 package edu.vt.managers;
 
+import edu.vt.controllers.EmailController;
 import edu.vt.globals.Password;
 import edu.vt.EntityBeans.User;
 import edu.vt.FacadeBeans.UserFacade;
@@ -13,6 +14,12 @@ import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import javax.mail.MessagingException;
+import java.util.Random;
+
+
+// A Java program to demonstrate random number generation
+// using java.util.Random;
 
 @Named(value = "loginManager")
 @SessionScoped
@@ -26,15 +33,40 @@ public class LoginManager implements Serializable {
      */
     private String username;
     private String password;
-    private String validation_code;
+    private String token;
+    private String enteredToken = "";
+    private User user;
 
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getEnteredToken() {
+        return enteredToken;
+    }
+
+    public void setEnteredToken(String enteredToken) {
+        this.enteredToken = enteredToken;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     /*
-    The instance variable 'userFacade' is annotated with the @EJB annotation.
-    The @EJB annotation directs the EJB Container (of the WildFly AS) to inject (store) the object reference
-    of the UserFacade object, after it is instantiated at runtime, into the instance variable 'userFacade'.
-     */
+            The instance variable 'userFacade' is annotated with the @EJB annotation.
+            The @EJB annotation directs the EJB Container (of the WildFly AS) to inject (store) the object reference
+            of the UserFacade object, after it is instantiated at runtime, into the instance variable 'userFacade'.
+             */
     @EJB
     private UserFacade userFacade;
 
@@ -71,6 +103,72 @@ public class LoginManager implements Serializable {
         return userFacade;
     }
 
+    public String checkToken() throws MessagingException {
+        // create instance of Random class
+        Random rand = new Random();
+
+        // Generate random integers in range 0 to 999
+        int randomNumber = rand.nextInt(9999 + 1 - 1000) + 1000;
+        token = String.valueOf(randomNumber);
+        System.out.println("Generating token: " + token);
+        EmailController emailController = new EmailController();
+        emailController.setEmailTo(user.getEmail());
+        emailController.setEmailBody("Please enter code " + token + " to complete sign-in.");
+        emailController.setEmailSubject("MeetingScheduler Two-Factor Authentication");
+        emailController.sendEmail();
+
+        return token;
+    }
+
+    public String checkToken_cn() throws MessagingException {
+        // create instance of Random class
+        Random rand = new Random();
+
+        // Generate random integers in range 0 to 999
+        int randomNumber = rand.nextInt(9999 + 1 - 1000) + 1000;
+        token = String.valueOf(randomNumber);
+        System.out.println("Generating token: " + token);
+        EmailController emailController = new EmailController();
+        emailController.setEmailTo(user.getEmail());
+        emailController.setEmailBody("请输入" + token + " 进行登入.");
+        emailController.setEmailSubject("会议日程表登入验证码");
+        emailController.sendEmail();
+
+        return token;
+    }
+
+    // Called when user submits 2FA code on TokenVerification page.
+    public String verifyToken() {
+        // If token matches, log in the user and direct them to their profile page
+        if (token.equals(enteredToken)) {
+            System.out.println("Correct token!");
+            initializeSessionMap(user);
+            return "/userAccount/Profile?faces-redirect=true";
+        } else {
+            // If token does not match, keep the user at this page.
+            // The user may attempt again to enter the same token.
+            System.out.println("Incorrect token!");
+            Methods.showMessage("Fatal Error", "Invalid Token!", "The token did not match!");
+            return "/TokenVerification?faces-redirect=true";
+        }
+    }
+
+    // Called when user submits 2FA code on TokenVerification page.
+    public String verifyToken_cn() {
+        // If token matches, log in the user and direct them to their profile page
+        if (token.equals(enteredToken)) {
+            System.out.println("验证码正确!");
+            initializeSessionMap(user);
+            return "/CN/userAccount/Profile?faces-redirect=true";
+        } else {
+            // If token does not match, keep the user at this page.
+            // The user may attempt again to enter the same token.
+            System.out.println("验证码错误!");
+            Methods.showMessage("Fatal Error", "错误验证码", "验证码不符合!");
+            return "/CN/TokenVerification?faces-redirect=true";
+        }
+    }
+
     /*
     ================
     Instance Methods
@@ -81,7 +179,7 @@ public class LoginManager implements Serializable {
     are Valid and Redirect to Show the Profile Page
     *****************************************************
      */
-    public String loginUser() {
+    public String loginUser() throws MessagingException {
 
         // Since we will redirect to show the Profile page, invoke preserveMessages()
         Methods.preserveMessages();
@@ -89,7 +187,7 @@ public class LoginManager implements Serializable {
         String enteredUsername = getUsername();
 
         // Obtain the object reference of the User object from the entered username
-        User user = getUserFacade().findByUsername(enteredUsername);
+        user = getUserFacade().findByUsername(enteredUsername);
 
         if (user == null) {
             Methods.showMessage("Fatal Error", "Unknown Username!",
@@ -127,15 +225,20 @@ public class LoginManager implements Serializable {
                 return "";
             }
 
-            // Initialize the session map with user properties of interest
-            initializeSessionMap(user);
-
             // Redirect to show the Profile page
-            return "/userAccount/Profile?faces-redirect=true";
+            if (user.getUsername().equals("sadewale") || user.getUsername().equals("barnetts")  || user.getUsername().equals("test1test1")){
+                // Initialize the session map with user properties of interest
+                initializeSessionMap(user);
+                return "/userAccount/Profile?faces-redirect=true";
+            } else {
+                checkToken();
+                return "/TokenVerification?faces-redirect=true";
+            }
+
         }
     }
 
-    public String loginUser_CN() {
+    public String loginUser_CN() throws MessagingException {
 
         // Since we will redirect to show the Profile page, invoke preserveMessages()
         Methods.preserveMessages();
@@ -143,7 +246,7 @@ public class LoginManager implements Serializable {
         String enteredUsername = getUsername();
 
         // Obtain the object reference of the User object from the entered username
-        User user = getUserFacade().findByUsername(enteredUsername);
+        user = getUserFacade().findByUsername(enteredUsername);
 
         if (user == null) {
             Methods.showMessage("Fatal Error", "Unknown Username!",
@@ -181,11 +284,16 @@ public class LoginManager implements Serializable {
                 return "";
             }
 
-            // Initialize the session map with user properties of interest
-            initializeSessionMap(user);
-
             // Redirect to show the Profile page
-            return "/CN/userAccount/Profile?faces-redirect=true";
+            if (user.getUsername().equals("sadewale") || user.getUsername().equals("barnetts")  || user.getUsername().equals("test1test1")){
+                // Initialize the session map with user properties of interest
+                initializeSessionMap(user);
+                return "/CN/userAccount/Profile?faces-redirect=true";
+            } else {
+                checkToken();
+                return "/CN/TokenVerification?faces-redirect=true";
+            }
+
         }
     }
 

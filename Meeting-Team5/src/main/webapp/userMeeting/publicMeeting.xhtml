@@ -109,6 +109,13 @@
                         -->
 
                         <f:facet name="footer">
+                            <c:if test="#{userController.isLoggedIn() == true}">
+                                <p:commandButton id="createButton" icon="fas fa-plus" value="Create"
+                                                 actionListener="#{meetingController.prepareCreate}"
+                                                 update=":MeetingCreateForm" oncomplete="PF('MeetingCreateDialog').show()"/>
+                            </c:if>
+
+
                             <p:commandButton id="playButton" icon="fas fa-play" value="Play"
                                              update=":MeetingVideoPlayDlg" oncomplete="PF('MeetingVideoPlayDialog').show()"
                                              disabled="#{empty meetingController.selected or meetingController.checkVideoLink() == true}"/>
@@ -118,8 +125,8 @@
                                              update="datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
                                              disabled="#{empty meetingController.selected or userController.selected.username == meetingController.selected.hostname or userController.isLoggedIn() != true}">
 
-                                <p:confirm header="Accpet Confirmation"
-                                           message="Are you sure you want to Accpet the selected Meeting?"
+                                <p:confirm header="Accept Confirmation"
+                                           message="Are you sure you want to Accept the selected Meeting?"
                                            icon="fas fa-exclamation-triangle fa-2x" />
                             </p:commandButton>
 
@@ -157,7 +164,7 @@
             </h:form>
 
         </div>
-        <ui:include src="/userMeeting/Create.xhtml"/>
+        <ui:include src="/userMeeting/PublicCreate.xhtml"/>
         <ui:include src="/userMeeting/View.xhtml"/>
         <ui:include src="/userMeeting/Invite.xhtml"/>
         <ui:include src="/userMeeting/Play.xhtml"/>

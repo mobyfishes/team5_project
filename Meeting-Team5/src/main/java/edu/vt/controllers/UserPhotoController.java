@@ -1,6 +1,6 @@
 /*
- * Created by Zihao Cai on 2021.4.18
- * Copyright © 2021 Osman Balci. All rights reserved.
+ * Created by Steven Barnett on 2021.3.29
+ * Copyright © 2021 Steven Barnett. All rights reserved.
  */
 package edu.vt.controllers;
 
@@ -10,19 +10,31 @@ import edu.vt.FacadeBeans.UserFacade;
 import edu.vt.FacadeBeans.UserPhotoFacade;
 import edu.vt.globals.Constants;
 import edu.vt.globals.Methods;
-import org.imgscalr.Scalr;
-import org.primefaces.model.UploadedFile;
 
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.imageio.ImageIO;
-import javax.inject.Named;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import javax.ejb.EJB;
+import javax.inject.Named;
+import javax.enterprise.context.SessionScoped;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
 
+import org.imgscalr.Scalr;
+import org.primefaces.event.CaptureEvent;
+import org.primefaces.model.UploadedFile;
+
+/*
+This file is maintained from Osman Balci's CloudDrive tutorial
+ */
 @Named("userPhotoController")
 @SessionScoped
 
@@ -33,11 +45,13 @@ public class UserPhotoController implements Serializable {
     Instance Variables (Properties)
     ===============================
      */
+    private String filename;
+
     private UploadedFile file;
 
     /*
     The instance variable 'userFacade' is annotated with the @EJB annotation.
-    The @EJB annotation directs the EJB Container (of the GlassFish AS) to inject (store) the object reference
+    The @EJB annotation directs the EJB Container (of the WildFly AS) to inject (store) the object reference
     of the UserFacade object, after it is instantiated at runtime, into the instance variable 'userFacade'.
      */
     @EJB
@@ -45,7 +59,7 @@ public class UserPhotoController implements Serializable {
 
     /*
     The instance variable 'userPhotoFacade' is annotated with the @EJB annotation.
-    The @EJB annotation directs the EJB Container (of the GlassFish AS) to inject (store) the object reference 
+    The @EJB annotation directs the EJB Container (of the WildFly AS) to inject (store) the object reference
     of the UserPhotoFacade object, after it is instantiated at runtime, into the instance variable 'userPhotoFacade'.
      */
     @EJB
@@ -56,6 +70,14 @@ public class UserPhotoController implements Serializable {
     Getter and Setter Methods
     =========================
      */
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     public UploadedFile getFile() {
         return file;
     }
@@ -77,6 +99,102 @@ public class UserPhotoController implements Serializable {
     Instance Methods
     ================
 
+    *********************
+    Return Captured Photo
+    *********************
+     */
+    public String capturedPhoto() {
+        return Constants.PHOTOS_URI + filename;
+    }
+
+    /*
+    *************************
+    Handle User Photo Capture
+    *************************
+     */
+    public void onCapture(CaptureEvent captureEvent) {
+        
+        // Obtain the object reference of the signed-in User object
+        User signedInUser = (User) Methods.sessionMap().get("user");
+        
+        /*
+        We use the filename "userPrimaryKey_tempFile" to store the signed-in 
+        user's photo captured with the web camera. Using the same file for multiple
+        users would create file locking issues, which increase complexity.
+         */
+        filename = signedInUser.getId() + "_tempFile";
+
+        String absolutePathOfFilename = Constants.PHOTOS_ABSOLUTE_PATH + filename;
+
+        // Create a new File object with absolute path of 'filename'
+        File capturedPhotoTemporaryFile = new File(absolutePathOfFilename);
+
+        // The class FileImageOutputStream enables writing its output directly to a File 
+        FileImageOutputStream imageOutput;
+
+        try {
+            // Obtain the captured photo image data as a stream of bytes
+            byte[] capturedPhotoImageData = captureEvent.getData();
+
+            // Instantiate a new FileImageOutputStream object for the temporary file
+            imageOutput = new FileImageOutputStream(capturedPhotoTemporaryFile);
+
+            // Write the capturedPhotoImageData byte stream into the temporary file
+            imageOutput.write(capturedPhotoImageData, 0, capturedPhotoImageData.length);
+
+            // Close the temporary file
+            imageOutput.close();
+
+        } catch (IOException ex) {
+            Methods.showMessage("Fatal Error", "Unable to write captured photo image!",
+                    "See: " + ex.getMessage());
+            return;
+        }
+
+        // Delete signed-in user's uploaded photo file, its thumbnail file, and its database record.
+        deletePhoto();
+
+        // Construct a new Photo object with PNG file extension and user's object reference
+        UserPhoto newPhoto = new UserPhoto("png", signedInUser);
+
+        // Create a record for the new Photo object in the database
+        getUserPhotoFacade().create(newPhoto);
+
+        // Obtain the object reference of the first and only Photo object of the
+        // user whose primary key is signedInUser.getId()
+        UserPhoto photo = getUserPhotoFacade().findPhotosByUserPrimaryKey(signedInUser.getId()).get(0);
+
+        try {
+            // Create a new File object for temporary file using its absolute filepath
+            File photoTempFile = new File(absolutePathOfFilename);
+
+            // Convert the captured photo stored in the temporary file into an inputStream
+            InputStream inputStream = new FileInputStream(photoTempFile);
+
+            // Write the captured photo's input stream of bytes under the photo object's
+            // filename using the inputStreamToFile method given below
+            File capturedPhotoFile = inputStreamToFile(inputStream, photo.getPhotoFilename());
+
+            // Create and save the thumbnail version of the captured photo file
+            saveThumbnail(capturedPhotoFile, photo);
+
+        } catch (IOException ex) {
+            Methods.showMessage("Fatal Error", "Unable to convert temp file into input stream!",
+                    "See: " + ex.getMessage());
+        }
+    }
+
+    /*
+    =============================
+    Remove Captured Photo to Redo
+    =============================
+     */
+    public String redo() {
+        filename = "";
+        return "/userPhoto/ChangePhoto?faces-redirect=true";
+    }
+
+    /*
     ************************
     Handle User Photo Upload
     ************************
@@ -86,12 +204,12 @@ public class UserPhotoController implements Serializable {
         Redirecting to show a JSF page involves more than one subsequent requests and
         the messages would die from one request to another if not kept in the Flash scope.
         Since we will redirect to show the Profile page, we invoke preserveMessages().
-        */
+         */
         Methods.preserveMessages();
 
         // Check if a file is selected
         if (file.getSize() == 0) {
-            Methods.showMessage("Information", "No File Selected!", 
+            Methods.showMessage("Information", "No File Selected!",
                     "You need to choose a file first before clicking Upload.");
             return "";
         }
@@ -134,12 +252,12 @@ public class UserPhotoController implements Serializable {
                     // File is an acceptable image type
                     break;
                 default:
-                    Methods.showMessage("Fatal Error", "Unrecognized File Type!", 
+                    Methods.showMessage("Fatal Error", "Unrecognized File Type!",
                             "Selected file type is not a JPG, JPEG, PNG, or GIF!");
                     return "";
             }
         } else {
-            Methods.showMessage("Fatal Error", "Unrecognized File Type!", 
+            Methods.showMessage("Fatal Error", "Unrecognized File Type!",
                     "Selected file type is not a JPG, JPEG, PNG, or GIF!");
             return "";
         }
@@ -161,11 +279,11 @@ public class UserPhotoController implements Serializable {
         Methods.preserveMessages();
 
         try {
-            // Delete signedInUser's earlier uploaded photo file, its thumbnail file, and its database record.
-            deletePhoto();
-
             // Obtain the object reference of the signed-in User object
             User signedInUser = (User) Methods.sessionMap().get("user");
+
+            // Delete signedInUser's earlier uploaded photo file, its thumbnail file, and its database record.
+            deletePhoto();
 
             // Obtain the uploaded file's MIME file type
             String mimeFileType = file.getContentType();
@@ -182,7 +300,7 @@ public class UserPhotoController implements Serializable {
             /*
             Obtain the object reference of the first Photo object of the signedInUser 
             whose primary key is signedInUser.getId()
-            */
+             */
             UserPhoto photo = getUserPhotoFacade().findPhotosByUserPrimaryKey(signedInUser.getId()).get(0);
 
             /*
@@ -202,7 +320,7 @@ public class UserPhotoController implements Serializable {
             Methods.showMessage("Information", "Success!", "User's Photo File is Successfully Uploaded!");
 
         } catch (IOException ex) {
-            Methods.showMessage("Fatal Error", "Something went wrong while storing the user's photo file!", 
+            Methods.showMessage("Fatal Error", "Something went wrong while storing the user's photo file!",
                     "See: " + ex.getMessage());
         }
 
@@ -255,7 +373,7 @@ public class UserPhotoController implements Serializable {
             outStream.close();
 
         } catch (IOException ex) {
-            Methods.showMessage("Fatal Error", "Something went wrong in input stream to file!", 
+            Methods.showMessage("Fatal Error", "Something went wrong in input stream to file!",
                     "See: " + ex.getMessage());
         }
 
@@ -299,11 +417,11 @@ public class UserPhotoController implements Serializable {
             /*
             NOTE: ImageIO is imported as: import javax.imageio.ImageIO;
             Write the thumbnailPhoto into thumbnailPhotoFile with the file extension.
-            */
+             */
             ImageIO.write(thumbnailPhoto, inputPhoto.getExtension(), thumbnailPhotoFile);
 
         } catch (IOException ex) {
-            Methods.showMessage("Fatal Error", "Something went wrong while saving the thumbnail file!", 
+            Methods.showMessage("Fatal Error", "Something went wrong while saving the thumbnail file!",
                     "See: " + ex.getMessage());
         }
     }
@@ -356,8 +474,8 @@ public class UserPhotoController implements Serializable {
                 getUserPhotoFacade().remove(photo);
 
             } catch (IOException ex) {
-                Methods.showMessage("Fatal Error", 
-                        "Something went wrong while deleting the user photo file!", 
+                Methods.showMessage("Fatal Error",
+                        "Something went wrong while deleting the user photo file!",
                         "See: " + ex.getMessage());
             }
         }

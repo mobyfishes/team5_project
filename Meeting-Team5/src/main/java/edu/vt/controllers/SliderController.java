@@ -95,4 +95,53 @@ public class SliderController {
 
         return imageDescription;
     }
+
+    public String description_cn(String image) {
+
+        String imageDescription = "";
+
+        switch (image) {
+            case "photo1.png":
+                imageDescription = "新年 一月一号";
+                break;
+            case "photo2.png":
+                imageDescription = "农历新年 一月到二月";
+                break;
+            case "photo3.png":
+                imageDescription = "忏悔节 二月到三月";
+                break;
+            case "photo4.png":
+                imageDescription = "情人节 二月十四号";
+                break;
+            case "photo5.png":
+                imageDescription = "圣-帕特里克节 三月十七号";
+                break;
+            case "photo6.png":
+                imageDescription = "侯丽节 三月";
+                break;
+            case "photo7.png":
+                imageDescription = "复活节 三月到四月";
+                break;
+            case "photo8.png":
+                imageDescription = "斋戒月 四月到五月";
+                break;
+            case "photo9.png":
+                imageDescription = "仲夏节 六月";
+                break;
+            case "photo10.png":
+                imageDescription = "排灯节 十月到十一月";
+                break;
+            case "photo11.png":
+                imageDescription = "亡灵节 十一月";
+                break;
+            case "photo12.png":
+                imageDescription = "光明节 十二月";
+                break;
+            case "photo13.png":
+                imageDescription = "圣诞节 十二月二十五号";
+                break;
+        }
+
+        return imageDescription;
+    }
 }

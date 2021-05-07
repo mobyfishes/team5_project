@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Created by Zihao Cai on 2021.3.21
+  - Copyright © 2021 Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<!-- Do not enter tags before the composition line since they are ignored by JSF -->
+
+<!-- This page is constructed based on the siteTemplate -->
+<ui:composition template="/template/siteTemplate.xhtml">
+    <ui:define name="title">
+        <!-- Set the page title -->
+        <h:outputText value="Sign In" />
+    </ui:define>
+
+    <!-- Create the content for this page below -->
+    <ui:define name="editableContent">
+        <div align="center">
+
+            <h1>Two-Factor Authentication</h1>
+            <br />
+
+            <h:form>
+                <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2">
+
+                    <h:outputLabel value="Please enter the code sent to #{loginManager.user.email}:" for="token" />
+                    <p:inputText id="token" value="#{loginManager.enteredToken}" required="true" class="inputTextField"
+                                 requiredMessage="The Token field is required." label="Token" >
+                    </p:inputText>
+
+                </p:panelGrid>
+
+                <br/>
+                <br/>
+                <!--
+                ================================
+                |         Verify Button       |
+                ================================
+                -->
+                <p:commandButton id="verify" value="Verify" action="#{loginManager.verifyToken()}"
+                                 ajax="false" icon="fas fa-sign-in-alt"
+                                 update="datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"/>
+                &nbsp;
+            </h:form>
+
+        </div>
+        <br/><br/><br/>
+    </ui:define>
+</ui:composition>
+<!-- Do not enter tags after the composition line since they are ignored by JSF -->
+
+</html>

@@ -22,7 +22,7 @@ public class UserFacade extends AbstractFacade<User> {
     to find entities by their primary key, and to query over entities (Users).
     ------------------------------------------------------------------------------------------------------
      */
-    @PersistenceContext(unitName = "Meeting-Team5PU")
+    @PersistenceContext(unitName = "Meeting-SchedulerPU")
     private EntityManager em;
 
      // @Override annotation indicates that the super class AbstractFacade's getEntityManager() method is overridden.

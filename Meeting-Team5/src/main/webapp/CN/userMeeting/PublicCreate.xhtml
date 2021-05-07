@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  - Created by Zihao Cai on 2021.3.22
+  - Copyright © 2021 Osman Balci. All rights reserved.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<ui:composition>
+    <!--
+    ===================================================================
+    |  Clicking the CREATE button in List.xhtml displays this Dialog       |
+    |  window for the user to enter the data to create a new public Video. |
+    ===================================================================
+    -->
+    <p:dialog  id="MeetingCreateDlg" widgetVar="MeetingCreateDialog" modal="true"
+               resizable="false" appendTo="@(body)" header="创建新的会议">
+
+        <h:form id="MeetingCreateForm" class="ui-datatable-data">
+
+            <h:panelGroup id="display">
+                <p:panelGrid columns="2" columnClasses="panelGridColumn1, panelGridColumn2"
+                             rendered="#{meetingController.selected != null}">
+
+                    <!--
+                        Title form for creating a new public video.
+                    -->
+                    <p:outputLabel value="标题:" for="title" />
+                    <p:inputText id="title" class="inputTextField" value="#{meetingController.selected.title}"
+                                 title="标题" required="true"
+                                 requiredMessage="请输入标题."/>
+
+                    <!--
+                       Description form for creating a new public video.
+                    -->
+                    <p:outputLabel value="地点:" for="location" />
+                    <p:inputText id="location" class="inputTextField" value="#{meetingController.selected.location}"
+                                 title="地点" required="true"
+                                 requiredMessage="请输入地点."/>
+
+                    <p:outputLabel value="会议类型:" for="type" />
+                    <p:selectOneButton id="type" value="#{meetingController.selected.status}">
+                        <f:selectItem itemLabel="公开" itemValue="public"/>
+                        <f:selectItem itemLabel="私人" itemValue="accepted"/>
+                    </p:selectOneButton>
+                    <!--
+                        Date Published for creating new public video.
+                    -->
+                    <p:outputLabel value="会议日期:" for="meet_Date" />
+                    <p:calendar id="meet_Date" pattern="yyyy-MM-dd" mask="true"
+                                value="#{meetingController.selected.meet_date}"
+                                title="输入会议时间 yyyy-MM-dd" required="true"
+                                requiredMessage="请输入会议日期." />
+
+                    <p:outputLabel for="meet_time" value="会议时间"/>
+                    <p:datePicker id="meet_time" value="#{meetingController.selected.meet_time}" timeOnly="true" pattern="HH:mm"/>
+
+                    <p:outputLabel value="时长:" for="duration" />
+                    <p:inputMask id="duration" class="inputTextField" value="#{meetingController.selected.duration}"
+                                 title="时长" required="true"
+                                 requiredMessage="请输入时长."
+                                 mask="99:99:99"/>
+
+                    <!--
+                        YouTube ID for creating a new public video.
+                    -->
+                    <p:outputLabel value="Youtube 视频ID:" for="video_link" />
+                    <p:inputText id="video_link" class="inputTextField" value="#{meetingController.selected.video_link}"
+                                 title="视频ID" required="false" placeholder="NoVideo"/>
+
+
+                    <!--
+                       Description form for creating a new public video.
+                    -->
+                    <p:outputLabel value="简介:" for="description" />
+                    <p:inputText id="description" class="inputTextField" value="#{meetingController.selected.description}"
+                                 title="简介" required="true"
+                                 requiredMessage="请输入简介."/>
+
+
+                </p:panelGrid>
+
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <br />
+                <div align="center">
+                    <!-- SAVE button -->
+                    <p:commandButton actionListener="#{meetingController.create}" value="保存" icon="fas fa-save" ajax="false"
+                                     update="display,:PublicMeetingListForm:datalist,:growlInfoMessage,:growlWarningMessage,:growlErrorMessage,:growlFatalMessage"
+                                     oncomplete="handleSubmit(args,'MeetingCreateDialog');" />
+                    &nbsp;
+                    <!--
+                    CANCEL button: Call the cancel() method immediately without first rendering this JSF page.
+                    The cancel() method will make the selected country object null and show the List page.
+                    -->
+                    <p:commandButton value="取消" action="#{meetingController.cancel()}"
+                                     icon="fas fa-ban" ajax="false" immediate="true"
+                                     onclick="PF('MeetingCreateDialog').hide()" />
+                </div>
+            </h:panelGroup>
+
+        </h:form>
+
+    </p:dialog>
+
+</ui:composition>
+</html>

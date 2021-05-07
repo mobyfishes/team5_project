@@ -25,7 +25,7 @@ public class MeetingFacade extends AbstractFacade<Meeting> {
     managed. The EntityManager API is used to create and remove persistent entity (PublicVideo) instances,
     to find entities by their primary key, and to query over entities (PublicVideo).
      */
-    @PersistenceContext(unitName = "Meeting-Team5PU")
+    @PersistenceContext(unitName = "Meeting-SchedulerPU")
     private EntityManager em;
 
     // @Override annotation indicates that the super class AbstractFacade's 

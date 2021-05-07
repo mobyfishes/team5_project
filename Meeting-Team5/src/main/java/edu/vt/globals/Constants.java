@@ -30,14 +30,14 @@ public final class Constants {
     |   For storing and internally accessing external files, we use absolute file paths.   |
     ========================================================================================
     Windows:
-    //    public static final String PHOTOS_ABSOLUTE_PATH = "C:/CS5704/DocRoot/UserPhotoStorage/";
+    //    public static final String PHOTOS_ABSOLUTE_PATH = "C:/CS5704/DocRoot/Team5-FileStorage/";
     Unix (macOS) or Linux:
      */
     // To run locally
-    public static final String PHOTOS_ABSOLUTE_PATH = "/Users/stevenbarnett/DocRoot/UserPhotoStorage/";
+    public static final String PHOTOS_ABSOLUTE_PATH = "/Users/stevenbarnett/DocRoot/Team5-FileStorage/";
 
     // To run on your AWS EC2 instance
-    //public static final String PHOTOS_ABSOLUTE_PATH  = "/opt/wildfly/DocRoot/UserPhotoStorage/";
+    //public static final String PHOTOS_ABSOLUTE_PATH  = "/opt/wildfly/DocRoot/Team5-FileStorage/";
     /*
      ---------------------------------
      To Deploy to Your AWS EC2 server:
@@ -61,13 +61,13 @@ public final class Constants {
     |   For displaying external files to the user in an XHTML page, we use the Undertow subsystem.  |
     =================================================================================================
      We configured WildFly Undertow subsystem so that
-     http://localhost:8080/files/f  displays file f from C:/CS5704/DocRoot/UserPhotoStorage/
+     http://localhost:8080/meetingphotos/f  displays file f from C:/CS5704/DocRoot/Team5-FileStorage/
      */
     // To run locally
-    public static final String PHOTOS_URI = "http://localhost:8080/profilephotos/";
+    public static final String PHOTOS_URI = "http://localhost:8080/meetingphotos/";
 
     // To run on your AWS EC2 instance with your IP address
-    //public static final String PHOTOS_URI  = "http://3.239.166.77:8080/profilephotos/";
+    //public static final String PHOTOS_URI  = "http://3.239.166.77:8080/meetinghotos/";
     /* 
     ==================================================
     |       Our Profile Photo Design Decision        |

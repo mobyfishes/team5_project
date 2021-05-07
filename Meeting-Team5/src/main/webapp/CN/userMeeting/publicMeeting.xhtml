@@ -47,8 +47,8 @@
                                  rowsPerPageTemplate="5,10,20,30,50,70,90"
                                  class="dataTable"
                     >
-                        <p:ajax event="rowSelect"   update="viewButton acceptButton playButton deleteButton"/>
-                        <p:ajax event="rowUnselect" update="viewButton acceptButton playButton deleteButton"/>
+                        <p:ajax event="rowSelect"   update="createButton viewButton acceptButton playButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton acceptButton playButton deleteButton"/>
                         <!--
                         Clicking the header of a column with 'sortBy' redisplays the table with that
                         column sorted in alphabetical order A to Z or numerically in ascending order.
@@ -109,6 +109,11 @@
                         -->
 
                         <f:facet name="footer">
+                            <c:if test="#{userController.isLoggedIn() == true}">
+                                <p:commandButton id="createButton" icon="fas fa-plus" value="创建"
+                                             actionListener="#{meetingController.prepareCreate}"
+                                             update=":MeetingCreateForm" oncomplete="PF('MeetingCreateDialog').show()"/>
+                            </c:if>
 
                             <!-- PLAY button -->
                             <p:commandButton id="playButton" icon="fas fa-play" value="播放"
@@ -167,7 +172,7 @@
             </h:form>
 
         </div>
-        <ui:include src="/CN/userMeeting/Create.xhtml"/>
+        <ui:include src="/CN/userMeeting/PublicCreate.xhtml"/>
         <ui:include src="/CN/userMeeting/View.xhtml"/>
         <ui:include src="/CN/userMeeting/Invite.xhtml"/>
         <ui:include src="/CN/userMeeting/Play.xhtml"/>

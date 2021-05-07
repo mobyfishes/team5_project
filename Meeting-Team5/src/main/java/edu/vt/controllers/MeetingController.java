@@ -453,6 +453,8 @@ public class MeetingController implements Serializable {
         Return the list of object references of all those public videos where the search
         string 'searchString' entered by the user is contained in the searchField.
         */
+
+
     public List<Meeting> getSearchItems() {
         /*
         =============================================================================================
@@ -602,6 +604,7 @@ public class MeetingController implements Serializable {
             String notification = "You are invited to " + meeting.getTitle() + " by " + meeting.getHostname() + " at " + meeting.getDateByFormat()  + " .";
             emailController.setEmailBody(notification);
             emailController.setEmailSubject("You got a meeting invitation!");
+
             try {
                 emailController.sendEmail();
             } catch (MessagingException e) {

@@ -29,18 +29,20 @@ edu/vt/FacadeBeans/UserFacade.java
  edu.vt.FacadeBeans.UserFacade
 edu/vt/controllers/UserController.java
  edu.vt.controllers.UserController
-edu/vt/managers/PasswordResetManager.java
- edu.vt.managers.PasswordResetManager
+edu/vt/controllers/SliderController.java
+ edu.vt.controllers.SliderController
 edu/vt/FacadeBeans/AbstractFacade.java
  edu.vt.FacadeBeans.AbstractFacade
+edu/vt/controllers/TextMessageController.java
+ edu.vt.controllers.TextMessageController
 edu/vt/validators/EmailValidator.java
  edu.vt.validators.EmailValidator
 edu/vt/controllers/EmailController.java
  edu.vt.controllers.EmailController
 edu/vt/EntityBeans/User.java
  edu.vt.EntityBeans.User
-edu/vt/controllers/SliderController.java
- edu.vt.controllers.SliderController
+edu/vt/managers/PasswordResetManager.java
+ edu.vt.managers.PasswordResetManager
 edu/vt/validators/UsernameValidator.java
  edu.vt.validators.UsernameValidator
 edu/vt/EntityBeans/UserPhoto.java
